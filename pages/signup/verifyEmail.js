@@ -1,20 +1,20 @@
 import { View, Text, Button, TouchableWithoutFeedback } from "react-native";
 import { useContext } from "react";
-import { signUpSchema } from "../validation";
-import InputField from "../components/inputFields";
+import { verifyEmailSchema } from "../../validation";
+import InputField from "../../components/inputFields";
 import { Formik } from "formik";
 import { LinearGradient } from "expo-linear-gradient";
 
-const Login = () => {
+const VerifyEmail = () => {
   //   const { authenticate, authenticationProcessLoading } = useContext(UserContext);
 
   return (
     <Formik
-      initialValues={{ email: "", password: "" }}
+      initialValues={{ otp: "" }}
       onSubmit={async (values, actions) => {
         //authentication code
       }}
-      validationSchema={signUpSchema}
+      validationSchema={verifyEmailSchema}
     >
       {(formikProps) => (
         <LinearGradient
@@ -27,26 +27,20 @@ const Login = () => {
             }
           >
             <View className="items-center gap-2 w-full ">
-              <Text className="text-white font-medium text-[30px]">Log in</Text>
+              <Text className="text-white font-medium text-[30px]">
+                Verify Email
+              </Text>
               <Text className="text-mainGray font-normal">
-                Log into your Meetup account
+                Type in the OTP that was sent to your email
               </Text>
             </View>
             <View className="w-[90%] items-center justify-center">
               <InputField
-                text={formikProps.values.email}
-                error={formikProps.errors.email}
-                setText={formikProps.handleChange("email")}
-                placeholder={"Email"}
-                iconName={"account"}
-              />
-              <InputField
-                text={formikProps.values.password}
-                error={formikProps.errors.password}
-                type={"password"}
-                setText={formikProps.handleChange("password")}
-                placeholder={"Password"}
-                iconName="lock"
+                text={formikProps.values.otp}
+                error={formikProps.errors.otp}
+                setText={formikProps.handleChange("otp")}
+                placeholder={"OTP"}
+                iconName={"form-textbox-password"}
               />
             </View>
             <TouchableWithoutFeedback onPress={formikProps.handleSubmit}>
@@ -58,12 +52,12 @@ const Login = () => {
             </TouchableWithoutFeedback>
 
             <View className=" flex-row items-center gap-1">
-              <Text className={"text-white font-normal"}>No account?</Text>
+              <Text className={"text-white font-normal"}>Go back to</Text>
               <Text
                 onPress={() => console.log("route to sign up page")}
                 className=" text-tekhelet font-normal"
               >
-                Sign Up
+                Login
               </Text>
             </View>
           </View>
@@ -73,4 +67,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default VerifyEmail;

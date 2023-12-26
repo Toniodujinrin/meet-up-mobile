@@ -1,18 +1,24 @@
 import { View, Text, Button, TouchableWithoutFeedback } from "react-native";
-import { useContext } from "react";
-import { signUpSchema } from "../validation";
-import InputField from "../components/inputFields";
+import { useContext, useState } from "react";
+import { signUpSchema } from "../../validation";
+import InputField from "../../components/inputFields";
 import { Formik } from "formik";
 import { LinearGradient } from "expo-linear-gradient";
 
-const Login = () => {
+const Signup = () => {
   //   const { authenticate, authenticationProcessLoading } = useContext(UserContext);
-
+  const [confirmPasswordError, setConfirmPassowrdError] = useState("");
   return (
     <Formik
-      initialValues={{ email: "", password: "" }}
+      initialValues={{ email: "", password: "", confirmPassword: "" }}
       onSubmit={async (values, actions) => {
-        //authentication code
+        if (values.confirmPassword !== values.password) {
+          setConfirmPassowrdError("confirm password must match password");
+        } else {
+          setConfirmPassowrdError("");
+
+          //authentication code
+        }
       }}
       validationSchema={signUpSchema}
     >
@@ -27,9 +33,11 @@ const Login = () => {
             }
           >
             <View className="items-center gap-2 w-full ">
-              <Text className="text-white font-medium text-[30px]">Log in</Text>
+              <Text className="text-white font-medium text-[30px]">
+                Create Account
+              </Text>
               <Text className="text-mainGray font-normal">
-                Log into your Meetup account
+                Create an account and meet up with friends
               </Text>
             </View>
             <View className="w-[90%] items-center justify-center">
@@ -48,6 +56,15 @@ const Login = () => {
                 placeholder={"Password"}
                 iconName="lock"
               />
+
+              <InputField
+                text={formikProps.values.confirmPassword}
+                error={confirmPasswordError}
+                type={"password"}
+                setText={formikProps.handleChange("confirmPassword")}
+                placeholder={"Confirm Password"}
+                iconName="lock"
+              />
             </View>
             <TouchableWithoutFeedback onPress={formikProps.handleSubmit}>
               <View className="bg-tekhelet h-[40px] justify-center w-[90%]  rounded-lg items-center ">
@@ -58,12 +75,12 @@ const Login = () => {
             </TouchableWithoutFeedback>
 
             <View className=" flex-row items-center gap-1">
-              <Text className={"text-white font-normal"}>No account?</Text>
+              <Text className={"text-white font-normal"}>Have an account?</Text>
               <Text
                 onPress={() => console.log("route to sign up page")}
                 className=" text-tekhelet font-normal"
               >
-                Sign Up
+                Log in
               </Text>
             </View>
           </View>
@@ -73,4 +90,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
