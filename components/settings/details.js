@@ -1,56 +1,25 @@
-import React, { useEffect } from "react";
-import { useState, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { verifyAccountSchema } from "../../validation";
 import BigPhoto from "../utils/bigPhoto";
 import { Formik } from "formik";
 import InputField from "../inputFields";
 import DeletePopUp from "../utils/deletePopUp";
-import { View, Text, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import ButtonGray from "../utils/buttonGray";
 import DangerButton from "../utils/dangerButton";
+import { UserContext } from "../../contexts/UserContext";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 const Details = ({ setWebcamShowing }) => {
-  // const {
-  //   user,
-  //   updateUser,
-  //   updateProcessLoading,
-  //   removeProfilePic,
-  //   removeProfilePicLoading,
-  // } = useContext(UserContext);
-  const user = {
-    profilePic: null,
-    _id: "todujinrin@gmail.com",
-    lastSeen: 1703425694037,
-    registration: 1691699442875,
-    bio: "Hello world",
-    firstName: "Toni",
-    lastName: "Odujinrin",
-    phone: "4319987779",
-    username: "Tons ",
-    defaultProfileColor: "#6F8ABE",
-  };
+  const {
+    user,
+    updateUser,
+    updateProcessLoading,
+    removeProfilePic,
+    removeProfilePicLoading,
+  } = useContext(UserContext);
 
-  const [disabled, setDisabled] = useState(true);
-  const [deletePopUpShowing, setDeletePopUpShowing] = useState(true);
-
-  // useEffect(() => {
-  //   const _user = { ...user };
-  //   delete _user.lastSeen;
-  //   delete _user.registration;
-  //   delete _user._id;
-  //   delete _user.profilePic;
-  //   delete _user.defaultProfileColor;
-  //   const payload = { bio, firstName, lastName, phone, username };
-  //   if (JSON.stringify(_user) == JSON.stringify(payload)) {
-  //     setDisabled(true);
-  //   } else setDisabled(false);
-  // }, [username, firstName, lastName, bio, phone]);
-
-  // const handleUpdate = (e) => {
-  //   if (JSON.stringify(noErrors) == JSON.stringify(validatorObject)) {
-  //     updateUser({ bio, firstName, lastName, phone, username });
-  //   }
-  // };
+  const [deletePopUpShowing, setDeletePopUpShowing] = useState(false);
 
   return (
     <View className="flex items-center justify-center">
@@ -87,7 +56,20 @@ const Details = ({ setWebcamShowing }) => {
             firstName: user.firstName,
             bio: user.bio,
           }}
-          onSubmit={async (values, actions) => {}}
+          onSubmit={async (values, actions) => {
+            if (
+              values.username == user.username &&
+              values.phone == user.phone &&
+              values.lastName == user.lastName &&
+              values.firstName == user.firstName &&
+              values.bio == user.bio
+            ) {
+              Toast.show({
+                type: "error",
+                text1: "no changes made",
+              });
+            } else updateUser(values);
+          }}
           validationSchema={verifyAccountSchema}
         >
           {(formikProps) => (
@@ -134,10 +116,10 @@ const Details = ({ setWebcamShowing }) => {
                 <View>
                   <ButtonGray
                     icon={"update"}
-                    disabled={disabled}
+                    loading={updateProcessLoading}
                     text={"Update"}
                     onClick={() => {
-                      console.log("handle update");
+                      formikProps.handleSubmit();
                     }}
                   />
                 </View>
@@ -146,7 +128,7 @@ const Details = ({ setWebcamShowing }) => {
                     icon={"camera"}
                     text={"Change Photo"}
                     onClick={() => {
-                      console.log("change photo");
+                      setWebcamShowing(true);
                     }}
                   />
                 </View>
@@ -154,8 +136,9 @@ const Details = ({ setWebcamShowing }) => {
                   <ButtonGray
                     icon={"close"}
                     text={"Remove Photo"}
+                    loading={removeProfilePicLoading}
                     onClick={() => {
-                      console.log("remove photo");
+                      removeProfilePic();
                     }}
                   />
                 </View>

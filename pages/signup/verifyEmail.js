@@ -1,18 +1,22 @@
 import { View, Text, Button, TouchableWithoutFeedback } from "react-native";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { verifyEmailSchema } from "../../validation";
 import InputField from "../../components/inputFields";
 import { Formik } from "formik";
 import { LinearGradient } from "expo-linear-gradient";
+import { SignUpContext } from "../../contexts/SignUpContext";
+import Loaders from "react-native-pure-loaders";
+import { useNavigation } from "@react-navigation/native";
 
 const VerifyEmail = () => {
-  //   const { authenticate, authenticationProcessLoading } = useContext(UserContext);
-
+  const navigate = useNavigation();
+  const { verifyEmail, signUpProcessLoading, resendCode, resendOtpLoading } =
+    useContext(SignUpContext);
   return (
     <Formik
       initialValues={{ otp: "" }}
-      onSubmit={async (values, actions) => {
-        //authentication code
+      onSubmit={async (values) => {
+        verifyEmail(values);
       }}
       validationSchema={verifyEmailSchema}
     >
@@ -45,16 +49,29 @@ const VerifyEmail = () => {
             </View>
             <TouchableWithoutFeedback onPress={formikProps.handleSubmit}>
               <View className="bg-tekhelet h-[40px] justify-center w-[90%]  rounded-lg items-center ">
-                <Text className="text-white text-[20px] font-normal">
-                  {"Continue"}
-                </Text>
+                {signUpProcessLoading ? (
+                  <Loaders.Ellipses size={35} color="#ffffff" />
+                ) : (
+                  <Text className="text-white text-[20px] font-normal">
+                    {"Continue"}
+                  </Text>
+                )}
               </View>
             </TouchableWithoutFeedback>
+
+            {!resendOtpLoading && (
+              <Text
+                onPress={() => resendCode()}
+                className=" text-tekhelet font-normal my-2"
+              >
+                Resend Code
+              </Text>
+            )}
 
             <View className=" flex-row items-center gap-1">
               <Text className={"text-white font-normal"}>Go back to</Text>
               <Text
-                onPress={() => console.log("route to sign up page")}
+                onPress={() => navigate.navigate("Login")}
                 className=" text-tekhelet font-normal"
               >
                 Login

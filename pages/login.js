@@ -1,18 +1,36 @@
 import { View, Text, Button, TouchableWithoutFeedback } from "react-native";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../contexts/UserContext";
 import { signUpSchema } from "../validation";
 import InputField from "../components/inputFields";
 import { Formik } from "formik";
+import { jwtDecode } from "jwt-decode";
+import "core-js/stable/atob";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loaders from "react-native-pure-loaders";
 
-const Login = () => {
-  //   const { authenticate, authenticationProcessLoading } = useContext(UserContext);
+const Login = ({ navigation }) => {
+  const { authenticate, authenticationProcessLoading } =
+    useContext(UserContext);
 
+  const navigateToMainIfTokenValid = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      if (decodedToken && decodedToken.isVerified) {
+        navigation.navigate("Main");
+      }
+    }
+  };
+  useEffect(() => {
+    navigateToMainIfTokenValid();
+  }, []);
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
-      onSubmit={async (values, actions) => {
-        //authentication code
+      onSubmit={async (values) => {
+        authenticate(values);
       }}
       validationSchema={signUpSchema}
     >
@@ -51,16 +69,20 @@ const Login = () => {
             </View>
             <TouchableWithoutFeedback onPress={formikProps.handleSubmit}>
               <View className="bg-tekhelet h-[40px] justify-center w-[90%]  rounded-lg items-center ">
-                <Text className="text-white text-[20px] font-normal">
-                  {"Continue"}
-                </Text>
+                {!authenticationProcessLoading ? (
+                  <Text className="text-white text-[20px] font-normal">
+                    {"Continue"}
+                  </Text>
+                ) : (
+                  <Loaders.Ellipses size={35} color="#ffffff" />
+                )}
               </View>
             </TouchableWithoutFeedback>
 
             <View className=" flex-row items-center gap-1">
               <Text className={"text-white font-normal"}>No account?</Text>
               <Text
-                onPress={() => console.log("route to sign up page")}
+                onPress={() => navigation.navigate("Signup")}
                 className=" text-tekhelet font-normal"
               >
                 Sign Up

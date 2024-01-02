@@ -1,33 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Text, View, TouchableWithoutFeedback, Button } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ContactList from "../contacts/contactList";
 import ButtonMain from "../utils/buttonMain";
 import InputField from "../inputFields";
-
-const contacts = [
-  {
-    _id: "toniodujinrin@gmail.com",
-    username: "Toniloba",
-    defaultProfileColor: "#8B7168",
-  },
-  {
-    profilePic: {
-      public_id: "profilePictures/vsudjql9iehmgbyicb4r",
-      url: "https://res.cloudinary.com/dltukdzmi/image/upload/v1702526932/profilePictures/vsudjql9iehmgbyicb4r.jpg",
-    },
-    _id: "tonilobaodujinrin@gmail.com",
-    username: "Toni Odujinrin",
-    defaultProfileColor: "#75B486",
-  },
-  {
-    _id: "ronaldosunmu@gmail.com",
-    username: "Ronny",
-    defaultProfileColor: "#59AB83",
-  },
-];
+import { UserContext } from "../../contexts/UserContext";
+import { useNavigation } from "@react-navigation/native";
+import { ConversationContext } from "../../contexts/ConversationContext";
 
 const CreateComp = () => {
+  const navigate = useNavigation();
+  const { createConversation, conversationProcessLoading } =
+    useContext(ConversationContext);
+  const { userContacts } = useContext(UserContext);
   const [selected, setSelected] = useState([]);
   const [name, setName] = useState("");
 
@@ -40,13 +25,26 @@ const CreateComp = () => {
     }
     setSelected(_selected);
   };
+
+  const handleCreate = () => {
+    let payload = {
+      users: selected,
+    };
+    if (selected.length == 1) {
+      payload.type = "single";
+    } else {
+      payload.type = "group";
+      payload.name = name;
+    }
+    createConversation(payload);
+  };
   return (
-    <View className="h-scree w-screen flex-1">
+    <View className="h-scree w-screen flex-1 bg-darkGray">
       <View className="w-full flex-row items-center justify-between py-3  px-3">
         <View className="flex flex-row">
           <TouchableWithoutFeedback
             onPress={() => {
-              console.log("go back");
+              navigate.goBack();
             }}
           >
             <MaterialCommunityIcons
@@ -62,7 +60,7 @@ const CreateComp = () => {
         <View className="flex flex-row space-x-2">
           <TouchableWithoutFeedback
             onPress={() => {
-              console.log("navigate to add users page");
+              navigate.navigate("Contacts");
             }}
           >
             <View className="rounded-full mr-2 flex items-center justify-center  bg-tekhelet w-[35px] aspect-square ">
@@ -76,8 +74,9 @@ const CreateComp = () => {
           {selected.length !== 0 && (
             <ButtonMain
               onClick={() => {
-                console.log("create convo");
+                handleCreate();
               }}
+              loading={conversationProcessLoading}
               disabled={
                 selected.length == 0 ||
                 (selected.length > 1 && name.length === 0)
@@ -99,7 +98,11 @@ const CreateComp = () => {
       )}
 
       <View className="w-full h-[80%] p-4">
-        <ContactList select={select} selected={selected} contacts={contacts} />
+        <ContactList
+          select={select}
+          selected={selected}
+          contacts={userContacts}
+        />
       </View>
     </View>
   );

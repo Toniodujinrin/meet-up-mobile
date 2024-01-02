@@ -46,17 +46,17 @@ const OnlineUsers = () => {
     },
   ];
   return (
-    <View className=" h-[120px] pl-2 w-screen flex flex-col items-center ">
-      <Text className="font-normal  self-start text-white text-[21px] ">
+    <View className=" h-[120px]  w-screen flex flex-col items-center ">
+      <Text className="font-normal pl-2  self-start text-white text-[21px] ">
         Online
       </Text>
 
       <ScrollView
         horizontal={true}
-        className="w-screen pl-3 flex flex-row space-x-4"
+        className="w-screen  flex flex-row space-x-4"
       >
         {users.map((user, index) => (
-          <View key={index} className="flex items-center">
+          <View key={index} className={`flex items-center ${!index && "pl-2"}`}>
             <ProfilePic
               displayName={user.username}
               defaultColor={user.defaultProfileColor}

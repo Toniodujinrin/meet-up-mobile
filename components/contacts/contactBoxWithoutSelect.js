@@ -1,43 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import ProfilePic from "../utils/profilePic";
 import { View, Text, TouchableWithoutFeedback } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-// import { useContext } from "react";
-// import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 
 const ContactBoxWithoutSelect = ({ username, image, _id, defaultColor }) => {
-  //   const user = JSON.parse(window.localStorage.getItem("user"));
-  // const {
-  //   pendingReceived,
-  //   userContacts,
-  //   pendingSent,
-  //   sendRequest,
-  //   acceptRequest,
-  // } = useContext(UserContext);
-  const userContacts = [
-    {
-      _id: "toniodujinrin@gmail.com",
-      username: "Toniloba",
-      defaultProfileColor: "#8B7168",
-    },
-    {
-      _id: "ronaldosunmu@gmail.com",
-      username: "Ronny",
-      defaultProfileColor: "#59AB83",
-    },
-    {
-      profilePic: {
-        public_id: "profilePictures/vsudjql9iehmgbyicb4r",
-        url: "https://res.cloudinary.com/dltukdzmi/image/upload/v1702526932/profilePictures/vsudjql9iehmgbyicb4r.jpg",
-      },
-      _id: "tonilobaodujinrin@gmail.com",
-      username: "Toni Odujinrin",
-      defaultProfileColor: "#75B486",
-    },
-  ];
-  const user = { _id: "todujinrin@gmail.com" };
-  const pendingReceived = [];
-  const pendingSent = [];
+  const {
+    user,
+    pendingReceived,
+    userContacts,
+    pendingSent,
+    sendRequest,
+    acceptRequest,
+  } = useContext(UserContext);
 
   const contacts = userContacts.map((contact) => {
     return contact._id;
@@ -70,7 +45,7 @@ const ContactBoxWithoutSelect = ({ username, image, _id, defaultColor }) => {
         user._id !== _id && (
           <TouchableWithoutFeedback
             onPress={() => {
-              console.log("send add request");
+              sendRequest(_id);
             }}
           >
             <MaterialCommunityIcons
@@ -84,7 +59,7 @@ const ContactBoxWithoutSelect = ({ username, image, _id, defaultColor }) => {
       {received.includes(_id) && (
         <TouchableWithoutFeedback
           onPress={() => {
-            console.log("accept request");
+            acceptRequest(_id);
           }}
         >
           <MaterialCommunityIcons

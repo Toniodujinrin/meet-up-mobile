@@ -1,19 +1,20 @@
-import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, TouchableWithoutFeedback } from "react-native";
 import ProfilePic from "../utils/profilePic";
+import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
-const user = {
-  username: "Toni",
-  defaultProfileColor: "#66A2AB",
-  profilePic: null,
-};
-const ProfileHeader = () => {
+const ProfileHeader = ({ dropDownShowing, setDropDownShowing }) => {
+  const navigate = useNavigation();
+  const { user } = useContext(UserContext);
+
   return (
     <View className="h-[80px] w-full py-3 px-3 bg-midGray border-b border-mediumGray flex flex-row items-center justify-between">
       <TouchableWithoutFeedback
         onPress={() => {
-          console.log("navigate to settings page");
+          navigate.navigate("Settings");
         }}
       >
         <View className=" flex flex-row cursor-pointer items-center space-x-2">
@@ -32,12 +33,15 @@ const ProfileHeader = () => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-
-      <MaterialCommunityIcons
-        name="dots-vertical"
-        color={"#ffffff"}
-        size={25}
-      />
+      <TouchableWithoutFeedback
+        onPress={() => setDropDownShowing(!dropDownShowing)}
+      >
+        <MaterialCommunityIcons
+          name="dots-vertical"
+          color={"#ffffff"}
+          size={25}
+        />
+      </TouchableWithoutFeedback>
     </View>
   );
 };

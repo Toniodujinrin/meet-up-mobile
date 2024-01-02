@@ -4,43 +4,92 @@ import Signup from "./pages/signup/signup";
 import Main from "./pages/main/main";
 import Contacts from "./pages/main/contacts";
 import Create from "./pages/main/create";
-import CreateComp from "./components/create";
 import Settings from "./pages/main/settings";
-import SettingsComp from "./components/settings";
 import VerifyAccount from "./pages/signup/verifyAccount";
 import VerifyEmail from "./pages/signup/verifyEmail";
-import { test, get } from "./api";
-export default function App() {
-  // const storeData = async (value) => {
-  //   try {
-  //     const value =
-  //       "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0b25pbG9iYW9kdWppbnJpbkBnbWFpbC5jb20iLCJlbWFpbFZlcmlmaWVkIjp0cnVlLCJhY2NvdW50VmVyaWZpZWQiOnRydWUsImlzVmVyaWZpZWQiOnRydWUsImtleVBhaXIiOnsicHVibGljS2V5IjoiLS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tXG5NRWdDUVFDdWhVanVPRHJXMkI3UVBBa0ZMQVRwVDE4Qm1TTlN6bkJYRi9BZ2VnR0MwZ0ZGZ0JlYmp5L00yc0xyXG5Kd3dQQ0x6RnprOFBZMnRpUkVtbkt4U0tyZTNMQWdNQkFBRT1cbi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0iLCJwcml2YXRlS2V5IjoiLS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLVxuTUlJQlBBSUJBQUpCQUs2RlNPNDRPdGJZSHRBOENRVXNCT2xQWHdHWkkxTE9jRmNYOENCNkFZTFNBVVdBRjV1UFxuTDh6YXd1c25EQThJdk1YT1R3OWphMkpFU2FjckZJcXQ3Y3NDQXdFQUFRSkJBS2RhSG9aNW0wcThja2ZpMmcrQVxubDdFWE1KYTZ2OW0vSnBFTjNuRjJMWTdBdEg3NE9ZRjQyNTVwazdVWldwS3dvdHBGZ0hpVWt4RXVOSi8vOEN4SlxudmhrQ0lRRHZUeEZwbklXek1BbkFTckMvQklkTElaU2JabURzTUQ0KytQNFJsRnpiN3dJaEFMcXhaMWwzelpUUFxuN1JCbWtyb3Ryd1FrU1g3d3dKYTl4dEE4b042b2VOL2xBaUVBamk2eUw4ZDVnSDg0Sy9HMGxhbUJJTmh3ek92RlxuQmsrYmpCcXdDWTNXcGkwQ0lRQ3JtL3NXUUl2VzZMSlBTeHBBelZGOWl5V0w3QjM3OG9KWVZBTEQ2VFVEQ1FJZ1xuTTZYNzBkWVhwRytoMndIdGYwUFROZ1JGUFpDRGlHQ25zNEQvSkk0TGhuZz1cbi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tIn0sImlhdCI6MTY5OTc1MzM1MH0.wINFBWtY2HgMFCVG4X2Smw9841NitapGP9To5IBJmzg";
-  //     await AsyncStorage.setItem("token", value);
-  //   } catch (e) {
-  //     // saving error
-  //   }
-  // };
+import Toast from "react-native-toast-message";
+import UserContextProvider from "./contexts/UserContext";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { QueryClient, QueryClientProvider } from "react-query";
+import ConversationContextProvider from "./contexts/ConversationContext";
+import Conversation from "./pages/main/conversation";
+import TokenContextProvider from "./contexts/TokenContext";
+import SignUpContextProvider from "./contexts/SignUpContext";
 
-  // storeData();
-
-  get("users/todujinrin@gmail.com", {}, false);
-
-  // test();
-
+const Title = () => {
   return (
-    <SafeAreaView className="bg-black flex-1 flex-col justify-center items-center">
+    <SafeAreaView className="bg-black">
       <StatusBar />
-      {/* <Signup /> */}
-      {/* <Login /> */}
-      {/* <View className="bg-black ">
-        <Text className="text-white">Hello world</Text>
-      </View> */}
-      {/* <Main /> */}
-      {/* <Settings /> */}
-      {/* <VerifyAccount /> */}
-      {/* <VerifyEmail /> */}
-      {/* <Create /> */}
-      {/* <Contacts /> */}
+      <Toast />
     </SafeAreaView>
+  );
+};
+
+export default function App() {
+  const Stack = createNativeStackNavigator();
+  const queryClient = new QueryClient();
+  return (
+    <NavigationContainer>
+      <TokenContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <SignUpContextProvider>
+            <UserContextProvider>
+              <ConversationContextProvider>
+                <Stack.Navigator>
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="Login"
+                    component={Login}
+                  />
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="Main"
+                    component={Main}
+                  />
+
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="Signup"
+                    component={Signup}
+                  />
+
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="Settings"
+                    component={Settings}
+                  />
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="VerifyAccount"
+                    component={VerifyAccount}
+                  />
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="VerifyEmail"
+                    component={VerifyEmail}
+                  />
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="Contacts"
+                    component={Contacts}
+                  />
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="Create"
+                    component={Create}
+                  />
+                  <Stack.Screen
+                    options={{ header: () => <Title /> }}
+                    name="Conversation"
+                    component={Conversation}
+                  />
+                </Stack.Navigator>
+              </ConversationContextProvider>
+            </UserContextProvider>
+          </SignUpContextProvider>
+        </QueryClientProvider>
+      </TokenContextProvider>
+    </NavigationContainer>
   );
 }

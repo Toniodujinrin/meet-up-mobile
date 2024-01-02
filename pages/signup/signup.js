@@ -4,20 +4,22 @@ import { signUpSchema } from "../../validation";
 import InputField from "../../components/inputFields";
 import { Formik } from "formik";
 import { LinearGradient } from "expo-linear-gradient";
+import { SignUpContext } from "../../contexts/SignUpContext";
+import Loaders from "react-native-pure-loaders";
 
-const Signup = () => {
-  //   const { authenticate, authenticationProcessLoading } = useContext(UserContext);
+const Signup = ({ navigation }) => {
+  const { signUp, signUpProcessLoading } = useContext(SignUpContext);
   const [confirmPasswordError, setConfirmPassowrdError] = useState("");
   return (
     <Formik
       initialValues={{ email: "", password: "", confirmPassword: "" }}
-      onSubmit={async (values, actions) => {
+      onSubmit={async (values) => {
         if (values.confirmPassword !== values.password) {
           setConfirmPassowrdError("confirm password must match password");
         } else {
           setConfirmPassowrdError("");
-
-          //authentication code
+          delete values.confirmPassword;
+          signUp(values);
         }
       }}
       validationSchema={signUpSchema}
@@ -68,16 +70,20 @@ const Signup = () => {
             </View>
             <TouchableWithoutFeedback onPress={formikProps.handleSubmit}>
               <View className="bg-tekhelet h-[40px] justify-center w-[90%]  rounded-lg items-center ">
-                <Text className="text-white text-[20px] font-normal">
-                  {"Continue"}
-                </Text>
+                {signUpProcessLoading ? (
+                  <Loaders.Ellipses size={35} color="#ffffff" />
+                ) : (
+                  <Text className="text-white text-[20px] font-normal">
+                    {"Continue"}
+                  </Text>
+                )}
               </View>
             </TouchableWithoutFeedback>
 
             <View className=" flex-row items-center gap-1">
               <Text className={"text-white font-normal"}>Have an account?</Text>
               <Text
-                onPress={() => console.log("route to sign up page")}
+                onPress={() => navigation.navigate("Login")}
                 className=" text-tekhelet font-normal"
               >
                 Log in

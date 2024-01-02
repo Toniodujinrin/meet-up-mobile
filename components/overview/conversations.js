@@ -2,18 +2,20 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, ScrollView, TouchableWithoutFeedback } from "react-native";
 import Conversation from "./conversation";
+import { useNavigation } from "@react-navigation/native";
 
 const Conversations = ({ searchResults }) => {
+  const navigate = useNavigation();
   return (
     <View className="flex w-full flex-col h-full items-center">
-      <View className="px-2 w-full flex flex-row h-[10%] justify-between items-center ">
+      <View className="px-2 w-full flex flex-row mb-2  justify-between items-center ">
         <Text className="text-white font-normal  text-[21px]">
           Conversations
         </Text>
 
         <TouchableWithoutFeedback
           onPress={() => {
-            console.log("navigate to add page");
+            navigate.navigate("Create");
           }}
         >
           <View className="w-[35px] aspect-square flex items-center justify-center  bg-tekhelet rounded-full ">
@@ -21,18 +23,19 @@ const Conversations = ({ searchResults }) => {
           </View>
         </TouchableWithoutFeedback>
       </View>
-      <ScrollView horizontal={false} className={"w-screen h-[90%]"}>
+      <View className={"w-screen "}>
         {searchResults.map((conversation, index) => (
-          <Conversation
-            _id={conversation._id}
-            lastMessage={conversation.lastMessage}
-            key={index}
-            name={conversation.name}
-            defaultConversationColor={conversation.defaultConversationColor}
-            image={conversation.conversationPic}
-          />
+          <View key={index}>
+            <Conversation
+              _id={conversation._id}
+              lastMessage={conversation.lastMessage}
+              name={conversation.name}
+              defaultConversationColor={conversation.defaultConversationColor}
+              image={conversation.conversationPic}
+            />
+          </View>
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 };

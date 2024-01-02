@@ -3,10 +3,14 @@ import InputField from "../../components/inputFields";
 import { Formik } from "formik";
 import { LinearGradient } from "expo-linear-gradient";
 import { verifyAccountSchema } from "../../validation";
+import Loaders from "react-native-pure-loaders";
+import { useContext } from "react";
+import { SignUpContext } from "../../contexts/SignUpContext";
+import { useNavigation } from "@react-navigation/native";
 
 const VerifyAccount = () => {
-  //   const { authenticate, authenticationProcessLoading } = useContext(UserContext);
-
+  const navigate = useNavigation();
+  const { verifyAccount, signUpProcessLoading } = useContext(SignUpContext);
   return (
     <Formik
       initialValues={{
@@ -16,7 +20,9 @@ const VerifyAccount = () => {
         firstName: "",
         bio: "",
       }}
-      onSubmit={async (values, actions) => {}}
+      onSubmit={async (values) => {
+        verifyAccount(values);
+      }}
       validationSchema={verifyAccountSchema}
     >
       {(formikProps) => (
@@ -77,16 +83,20 @@ const VerifyAccount = () => {
             </View>
             <TouchableWithoutFeedback onPress={formikProps.handleSubmit}>
               <View className="bg-tekhelet h-[40px] justify-center w-[90%]  rounded-lg items-center ">
-                <Text className="text-white text-[20px] font-normal">
-                  {"Continue"}
-                </Text>
+                {signUpProcessLoading ? (
+                  <Loaders.Ellipses size={35} color="#ffffff" />
+                ) : (
+                  <Text className="text-white text-[20px] font-normal">
+                    {"Continue"}
+                  </Text>
+                )}
               </View>
             </TouchableWithoutFeedback>
 
             <View className=" flex-row items-center gap-1">
               <Text className={"text-white font-normal"}>Go back to</Text>
               <Text
-                onPress={() => console.log("route to sign up page")}
+                onPress={() => navigate.navigate("Login")}
                 className=" text-tekhelet font-normal"
               >
                 Login

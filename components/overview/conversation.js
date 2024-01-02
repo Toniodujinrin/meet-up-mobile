@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, TouchableHighlight, View } from "react-native";
 import ProfilePic from "../utils/profilePic";
+import { useNavigation } from "@react-navigation/native";
 
 const Conversation = ({
   _id,
@@ -10,10 +11,11 @@ const Conversation = ({
   defaultConversationColor,
   image,
 }) => {
+  const navigate = useNavigation();
   return (
     <TouchableHighlight
       onPress={() => {
-        console.log("navigate to ", _id);
+        navigate.navigate("Conversation", { id: _id });
       }}
     >
       <View

@@ -1,14 +1,14 @@
 import React from "react";
 import DangerButton from "./dangerButton";
-// import { ConversationContext } from "../../../../contexts/conversationContext";
-// import { UserContext } from "../../../../contexts/UserContext";
+import { ConversationContext } from "../../contexts/ConversationContext";
+import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableWithoutFeedback, View, Text } from "react-native";
 const DeletePopUp = ({ setDeleteShowing, deleteAction }) => {
-  //   const { leaveConversation, deleteConversation, conversationProcessLoading } =
-  //     useContext(ConversationContext);
-  //   const { deleteAccount, deleteAccountLoading } = useContext(UserContext);
+  const { leaveConversation, deleteConversation, conversationProcessLoading } =
+    useContext(ConversationContext);
+  const { deleteAccount, deleteAccountLoading } = useContext(UserContext);
   return (
     <View className="w-[90%] flex items-center  flex-col p-3 h-[250px] absolute bg-black z-30  border border-midGray rounded-md">
       <View className=" flex self-end cursor-pointer">
@@ -19,8 +19,8 @@ const DeletePopUp = ({ setDeleteShowing, deleteAction }) => {
 
       {deleteAction == "leave" && (
         <Text className="text-white text-[21px] font-normal my-8 text-center">
-          Are you sure you want to leave this conversation, you wiNll not be
-          able to enter join again untill someone adds you back
+          Are you sure you want to leave this conversation, you will not be able
+          to enter join again untill someone adds you back
         </Text>
       )}
       {deleteAction == "account" && (
@@ -37,20 +37,18 @@ const DeletePopUp = ({ setDeleteShowing, deleteAction }) => {
       )}
       {deleteAction == "leave" && (
         <DangerButton
-          //loading={conversationProcessLoading}
-          onClick={
-            () => console.log("leave conversation")
-            // leaveConversation()
-          }
+          loading={conversationProcessLoading}
+          onClick={() => {
+            leaveConversation();
+          }}
           text={"Leave Conversation"}
         />
       )}
       {deleteAction == "account" && (
         <DangerButton
-          //loading={deleteAccountLoading}
+          loading={deleteAccountLoading}
           onClick={() => {
-            console.log("delete account");
-            // deleteAccount();
+            deleteAccount();
           }}
           text={"Delete Account"}
         />
@@ -60,10 +58,9 @@ const DeletePopUp = ({ setDeleteShowing, deleteAction }) => {
         <DangerButton
           text={"Delete Conversation"}
           onClick={() => {
-            console.log("delete conversation");
-            //deleteConversation();
+            deleteConversation();
           }}
-          //loading={conversationProcessLoading}
+          loading={conversationProcessLoading}
         />
       )}
     </View>

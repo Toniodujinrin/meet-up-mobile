@@ -1,53 +1,82 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, TouchableWithoutFeedback } from "react-native";
 import SearchBar from "../utils/searchBar";
 import ContactList from "./contactList";
+import { UserContext } from "../../contexts/UserContext";
+import { useNavigation } from "@react-navigation/native";
+import Menu from "../utils/menu";
+import Loaders from "react-native-pure-loaders";
 
 const ContactsComp = () => {
   const [currentPage, setCurrentPage] = useState("contacts");
   const [dropDownShowing, setDropDownShowing] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [selected, setSelected] = useState([]);
-
-  const select = (_id) => {
-    let _selected = [...selected];
-    if (selected.includes(_id)) {
-      _selected = _selected.filter((item) => item !== _id);
-    } else {
-      _selected.push(_id);
-    }
-    setSelected(_selected);
-  };
-  const contacts = [
+  const [searchResults, setSearchResults] = useState([]);
+  const {
+    userContacts,
+    pendingSent,
+    pendingReceived,
+    searchUsers,
+    searchedUsers,
+    userSearchLoading,
+  } = useContext(UserContext);
+  const navigate = useNavigation();
+  const options = [
     {
-      _id: "toniodujinrin@gmail.com",
-      username: "Toniloba",
-      defaultProfileColor: "#8B7168",
-    },
-    {
-      profilePic: {
-        public_id: "profilePictures/vsudjql9iehmgbyicb4r",
-        url: "https://res.cloudinary.com/dltukdzmi/image/upload/v1702526932/profilePictures/vsudjql9iehmgbyicb4r.jpg",
+      name: "Contacts",
+      iconName: "account",
+      onClick: () => {
+        setCurrentPage("contacts");
+        setDropDownShowing(false);
       },
-      _id: "tonilobaodujinrin@gmail.com",
-      username: "Toni Odujinrin",
-      defaultProfileColor: "#75B486",
     },
     {
-      _id: "ronaldosunmu@gmail.com",
-      username: "Ronny",
-      defaultProfileColor: "#59AB83",
+      name: "Pending",
+      iconName: "clock",
+      onClick: () => {
+        setCurrentPage("pending");
+        setDropDownShowing(false);
+      },
+    },
+
+    {
+      name: "Requests",
+      iconName: "checkbox-multiple-marked-circle",
+      onClick: () => {
+        setCurrentPage("requests");
+        setDropDownShowing(false);
+      },
     },
   ];
+  useEffect(() => {
+    let searchPool = [];
+    if (currentPage == "add") {
+      if (searchValue) {
+        searchUsers(searchValue);
+      }
+    } else {
+      if (currentPage == "contacts") searchPool = [...userContacts];
+      else if (currentPage == "pending") searchPool = [...pendingSent];
+      else if (currentPage == "requests") searchPool = [...pendingReceived];
+      if (searchValue.length > 0) {
+        const results = searchPool.filter((contact) =>
+          contact._id.toLowerCase().includes(searchValue.toLocaleLowerCase())
+        );
+        setSearchResults(results);
+      } else {
+        setSearchResults(searchPool);
+      }
+    }
+  }, [searchValue, currentPage, pendingSent, pendingReceived, userContacts]);
 
   return (
-    <View className="h-screen w-screen flex-1">
+    <View className="h-screen w-screen  bg-darkGray">
       <View className="w-full flex-row items-center justify-between py-3  px-3">
         <View className="flex flex-row">
           <TouchableWithoutFeedback
             onPress={() => {
-              console.log("go back");
+              navigate.goBack();
             }}
           >
             <MaterialCommunityIcons
@@ -62,10 +91,15 @@ const ContactsComp = () => {
             </Text>
           )}
           {currentPage == "pending" && (
-            <Text className="text-white text-[21px] ">Pending</Text>
+            <Text className="text-white font-normal text-[21px] ">Pending</Text>
           )}
-          {currentPage == "recieve" && (
-            <Text className="text-white text-[21px] ">Requests</Text>
+          {currentPage == "requests" && (
+            <Text className="text-white text-[21px] font-normal ">
+              Requests
+            </Text>
+          )}
+          {currentPage == "add" && (
+            <Text className="text-white text-[21px] font-normal ">Add</Text>
           )}
 
           <TouchableWithoutFeedback
@@ -85,9 +119,18 @@ const ContactsComp = () => {
               />
             </View>
           </TouchableWithoutFeedback>
+          {dropDownShowing && (
+            <View className="absolute z-30  top-[40px]">
+              <Menu options={options} />
+            </View>
+          )}
         </View>
 
-        <TouchableWithoutFeedback className="">
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setCurrentPage("add");
+          }}
+        >
           <View
             style={{ alignSelf: "flex-end" }}
             className="rounded-full flex items-center justify-center  bg-tekhelet w-[35px] aspect-square "
@@ -108,12 +151,17 @@ const ContactsComp = () => {
         />
       </View>
       <View className="h-[80%]  w-full px-3">
-        <ContactList
-          contacts={contacts}
-          shouldSelect={false}
-          select={select}
-          selected={selected}
-        />
+        {currentPage == "add" ? (
+          userSearchLoading ? (
+            <View className="w-full  flex justify-center items-center">
+              <Loaders.Ellipses size={35} color="#ffffff" />
+            </View>
+          ) : (
+            <ContactList contacts={searchedUsers} shouldSelect={false} />
+          )
+        ) : (
+          <ContactList contacts={searchResults} shouldSelect={false} />
+        )}
       </View>
     </View>
   );
