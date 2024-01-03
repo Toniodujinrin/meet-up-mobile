@@ -28,8 +28,8 @@ const ContactBoxWithSelect = ({
           displayName={username}
         />
         <View>
-          <Text className="text-white">{username}</Text>
-          <Text className="text-mainGray">{_id}</Text>
+          <Text className="text-white font-normal">{username}</Text>
+          <Text className="text-mainGray font-normal">{_id}</Text>
         </View>
       </View>
     </TouchableHighlight>

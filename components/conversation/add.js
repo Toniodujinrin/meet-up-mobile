@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useContext } from "react";
 import { ConversationContext } from "../../contexts/ConversationContext";
-//import { SocketContext } from "../../../../contexts/socketContext";
+import { SocketContext } from "../../contexts/SocketContext";
 import ContactList from "../contacts/contactList";
 import { UserContext } from "../../contexts/UserContext";
 import { View, Text } from "react-native";
@@ -15,7 +15,7 @@ const Add = ({ setCurrentDisplay }) => {
   const { userContacts } = useContext(UserContext);
   const { conversationDetails, addToConversation, conversationProcessLoading } =
     useContext(ConversationContext);
-  //   const { groupKey } = useContext(SocketContext);
+  const { groupKey } = useContext(SocketContext);
 
   const select = (_id) => {
     if (selected.includes(_id)) {
@@ -25,13 +25,12 @@ const Add = ({ setCurrentDisplay }) => {
   };
 
   const handleAdd = () => {
-    console.log("add");
-    // const payload = {
-    //   conversationId: conversationDetails._id,
-    //   users: selected,
-    //   groupKey,
-    // };
-    // addToConversation(payload);
+    const payload = {
+      conversationId: conversationDetails._id,
+      users: selected,
+      groupKey,
+    };
+    addToConversation(payload);
   };
 
   return (

@@ -34,11 +34,11 @@ const ConversationMessage = ({ body, timeStamp, senderId, status }) => {
             senderId._id == user._id
               ? `bg-tekhelet self-end`
               : `bg-midGray self-start`
-          } w-fit max-w-[200px] flex  px-[9px] py-[6px] text-white rounded-[18px]`}
+          } w-fit max-w-[200px] flex items-center justify-center  px-[9px] py-[6px] text-white rounded-[18px]`}
         >
           <Text className="text-white font-normal">{body}</Text>
         </View>
-        <View className="flex flex-row gap-2">
+        <View className="flex flex-row space-x-2">
           <Text className="text-mainGray font-normal self-end flex">{`${dayjs(
             timeStamp
           ).fromNow()}`}</Text>

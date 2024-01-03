@@ -65,11 +65,17 @@ const SocketContextProvider = ({ children }) => {
 
     //error handling
     sock.on("conn_error", () => {
-      toast.error("could not connect to conversation");
+      Toast.show({
+        type: "error",
+        text1: "could not connect to conversation",
+      });
       navigate.navigate("Main");
     });
     sock.on("replySignalError", () => {
-      toast.error("could not reply to call");
+      Toast.show({
+        type: "error",
+        text1: "could not reply to call",
+      });
       navigate.navigate("Main");
     });
 
@@ -217,7 +223,11 @@ const SocketContextProvider = ({ children }) => {
     if (groupKey && socket) {
       payload.body = encryption.encryptMessage(payload.body, groupKey);
       socket.emit("message", payload);
-    } else toast.error("could not send message");
+    } else
+      Toast.show({
+        type: "error",
+        text1: "could not send message",
+      });
   };
 
   const sendTyping = (isTyping) => {

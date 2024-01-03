@@ -32,10 +32,10 @@ const ContactBoxWithoutSelect = ({ username, image, _id, defaultColor }) => {
           displayName={username}
         />
         <View className="flex flex-col">
-          <Text className="text-white">{username}</Text>
-          <Text className="text-mainGray">{_id}</Text>
+          <Text className="text-white font-normal">{username}</Text>
+          <Text className="text-mainGray font-normal">{_id}</Text>
           {sent.includes(_id) && (
-            <Text className="text-tekhelet ">pending</Text>
+            <Text className="text-tekhelet font-normal ">pending</Text>
           )}
         </View>
       </View>

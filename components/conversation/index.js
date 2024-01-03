@@ -18,7 +18,7 @@ import Info from "./info";
 // import SimplePeer from "simple-peer";
 
 const ConversationComp = ({ id }) => {
-  //   const ref = useRef();
+  let scrollRef = useRef();
   const [currentDisplay, setCurrentDisplay] = useState("chat");
 
   const {
@@ -56,23 +56,19 @@ const ConversationComp = ({ id }) => {
     sendTyping(isTyping);
   }, [isTyping]);
 
-  //   useEffect(() => {
-  //     if (ref.current) {
-  //       ref.current.scrollTop = ref.current.scrollHeight;
-  //     }
-  //   });
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollToEnd({ animated: true });
+    }
+  });
 
   const handleTypingStart = () => {
     if (typingTimeout) clearTimeout(typingTimeout);
-    setIsTyping(true);
-  };
-
-  const handleTyinpingStop = () => {
-    if (typingTimeout) clearTimeout(typingTimeout);
     const timeout = setTimeout(() => {
       setIsTyping(false);
-    }, 1500);
+    }, 1000);
     setTypingTimeout(timeout);
+    setIsTyping(true);
   };
 
   const handleSendMessage = () => {
@@ -315,10 +311,13 @@ const ConversationComp = ({ id }) => {
                 End to End Encrypted
               </Text>
             </View>
-            <ScrollView className=" flex space-y-4 mt-2 w-full px-3 ">
+            <ScrollView
+              ref={scrollRef}
+              className=" flex space-y-4 mt-2 w-full px-3 "
+            >
               {messages.map((message, index) =>
                 conversationDetails.type == "single" ? (
-                  <View>
+                  <View key={index}>
                     <Message
                       key={index}
                       body={message.body}
@@ -328,7 +327,7 @@ const ConversationComp = ({ id }) => {
                     />
                   </View>
                 ) : (
-                  <View>
+                  <View key={index}>
                     <ConversationMessage
                       key={index}
                       body={message.body}
@@ -344,7 +343,6 @@ const ConversationComp = ({ id }) => {
           </View>
           <InputBox
             handleTypingStart={handleTypingStart}
-            handleTypingStop={handleTyinpingStop}
             value={value}
             setValue={setValue}
             handleSendMessage={handleSendMessage}

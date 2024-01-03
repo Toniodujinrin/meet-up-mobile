@@ -6,14 +6,13 @@ const InputBox = ({
   setValue,
   handleSendMessage,
   handleTypingStart,
-  handleTypingStop,
 }) => {
   return (
     <View className="w-full  border-mediumGray flex flex-row space-x-3 justify-center items-center h-[100px]">
       <TextInput
         value={value}
         multiline={true}
-        //onKeyPress={() => handleTypingStart()}
+        onKeyPress={() => handleTypingStart()}
         className=" mr-2  text-white focus:outline-none rounded-[25px] p-3 pl-4 w-[70%] h-[50px] bg-mediumGray"
         onChangeText={setValue}
         placeholderTextColor={"#ffffff"}
