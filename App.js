@@ -16,6 +16,7 @@ import ConversationContextProvider from "./contexts/ConversationContext";
 import Conversation from "./pages/main/conversation";
 import TokenContextProvider from "./contexts/TokenContext";
 import SignUpContextProvider from "./contexts/SignUpContext";
+import SocketContextProvider from "./contexts/SocketContext";
 
 const Title = () => {
   return (
@@ -34,59 +35,61 @@ export default function App() {
       <TokenContextProvider>
         <QueryClientProvider client={queryClient}>
           <SignUpContextProvider>
-            <UserContextProvider>
-              <ConversationContextProvider>
-                <Stack.Navigator>
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="Login"
-                    component={Login}
-                  />
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="Main"
-                    component={Main}
-                  />
+            <SocketContextProvider>
+              <UserContextProvider>
+                <ConversationContextProvider>
+                  <Stack.Navigator>
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="Login"
+                      component={Login}
+                    />
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="Main"
+                      component={Main}
+                    />
 
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="Signup"
-                    component={Signup}
-                  />
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="Signup"
+                      component={Signup}
+                    />
 
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="Settings"
-                    component={Settings}
-                  />
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="VerifyAccount"
-                    component={VerifyAccount}
-                  />
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="VerifyEmail"
-                    component={VerifyEmail}
-                  />
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="Contacts"
-                    component={Contacts}
-                  />
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="Create"
-                    component={Create}
-                  />
-                  <Stack.Screen
-                    options={{ header: () => <Title /> }}
-                    name="Conversation"
-                    component={Conversation}
-                  />
-                </Stack.Navigator>
-              </ConversationContextProvider>
-            </UserContextProvider>
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="Settings"
+                      component={Settings}
+                    />
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="VerifyAccount"
+                      component={VerifyAccount}
+                    />
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="VerifyEmail"
+                      component={VerifyEmail}
+                    />
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="Contacts"
+                      component={Contacts}
+                    />
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="Create"
+                      component={Create}
+                    />
+                    <Stack.Screen
+                      options={{ header: () => <Title /> }}
+                      name="Conversation"
+                      component={Conversation}
+                    />
+                  </Stack.Navigator>
+                </ConversationContextProvider>
+              </UserContextProvider>
+            </SocketContextProvider>
           </SignUpContextProvider>
         </QueryClientProvider>
       </TokenContextProvider>

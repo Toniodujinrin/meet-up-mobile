@@ -1,64 +1,60 @@
 import React, { useEffect, useState } from "react";
 import InputBox from "./inputBox";
 import Header from "./header";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { useContext } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Add from "./add";
-// import { SocketContext } from "../../../contexts/socketContext";
-// import { useParams, useNavigate } from "react-router-dom";
+import { SocketContext } from "../../contexts/SocketContext";
 import { useRef } from "react";
-// import Message from "./message";
+import Typing from "./typing";
+import Message from "./message";
+import { ConversationContext } from "../../contexts/ConversationContext";
+import ConversationMessage from "./conversationMessage";
+import Info from "./info";
+// import CallComp from "./call";
+// import CallNotification from "./callNotification";
 // import Typing from "./typing";
 // import SimplePeer from "simple-peer";
-import { ConversationContext } from "../../contexts/ConversationContext";
-// import ConversationMessage from "./conversationMessage";
-import Info from "./info";
-// import Add from "./detailsComponents/add";
 
-// import CallComp from "./call";
-// import { toast } from "react-hot-toast";
-// import CallNotification from "./callNotification";
-
-const ConversationComp = () => {
+const ConversationComp = ({ id }) => {
   //   const ref = useRef();
-  //   const navigate = useNavigate();
   const [currentDisplay, setCurrentDisplay] = useState("chat");
 
-  //   const {
-  //     messages,
-  //     sendMessage,
-  //     sendTyping,
-  //     typing,
-  //     call,
-  //     turnServers,
-  //     socket,
-  //     setNewCall,
-  //     leaveConversation,
-  //   } = useContext(SocketContext);
-  const [callAccepted, setCallAccepted] = useState(false);
-  const [incomingCall, setIncomingCall] = useState(false);
+  const {
+    messages,
+    sendMessage,
+    sendTyping,
+    typing,
+    // call,
+    // turnServers,
+    // socket,
+    // setNewCall,
+    // leaveConversation,
+  } = useContext(SocketContext);
+
   const { conversationDetails } = useContext(ConversationContext);
   const [value, setValue] = useState("");
-  const [peer, setPeer] = useState("");
-  const [_stream, setStream] = useState(null);
+
   const [isTyping, setIsTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState();
-  //   const { id } = useParams();
-  const remoteVideo = useRef();
-  const selfVideo = useRef();
-  const [videoEnabled, setVideoEnabled] = useState(true);
-  const [audioEnabled, setAudioEnabled] = useState(true);
-
+  const [_stream, setStream] = useState(null);
+  // const remoteVideo = useRef();
+  // const selfVideo = useRef();
+  // const [videoEnabled, setVideoEnabled] = useState(true);
+  // const [audioEnabled, setAudioEnabled] = useState(true);
+  // const [peer, setPeer] = useState("");
+  // const [callAccepted, setCallAccepted] = useState(false);
+  //   const [incomingCall, setIncomingCall] = useState(false);
   //   useEffect(() => {
   //     if (call && call.offer && !callAccepted) {
   //       setIncomingCall(true);
   //     }
   //   }, [call]);
 
-  //   useEffect(() => {
-  //     sendTyping(isTyping);
-  //   }, [isTyping]);
+  useEffect(() => {
+    sendTyping(isTyping);
+  }, [isTyping]);
 
   //   useEffect(() => {
   //     if (ref.current) {
@@ -66,27 +62,28 @@ const ConversationComp = () => {
   //     }
   //   });
 
-  //   const handleTypingStart = () => {
-  //     if (typingTimeout) clearTimeout(typingTimeout);
-  //     setIsTyping(true);
-  //   };
+  const handleTypingStart = () => {
+    if (typingTimeout) clearTimeout(typingTimeout);
+    setIsTyping(true);
+  };
 
-  //   const handleTyinpingStop = () => {
-  //     if (typingTimeout) clearTimeout(typingTimeout);
-  //     const timeout = setTimeout(() => {
-  //       setIsTyping(false);
-  //     }, 1500);
-  //     setTypingTimeout(timeout);
-  //   };
+  const handleTyinpingStop = () => {
+    if (typingTimeout) clearTimeout(typingTimeout);
+    const timeout = setTimeout(() => {
+      setIsTyping(false);
+    }, 1500);
+    setTypingTimeout(timeout);
+  };
 
-  //   const handleSendMessage = () => {
-  //     const paylaod = {
-  //       body: value,
-  //       conversationId: id,
-  //     };
-  //     sendMessage(paylaod);
-  //     setValue("");
-  //   };
+  const handleSendMessage = () => {
+    const paylaod = {
+      body: value,
+      conversationId: id,
+    };
+
+    sendMessage(paylaod);
+    setValue("");
+  };
 
   //   const initiateMedia = async () => {
   //     const selfStream = await navigator.mediaDevices.getUserMedia({
@@ -296,7 +293,8 @@ const ConversationComp = () => {
   //   };
 
   return (
-    <View className={`${incomingCall && `flex items-center justify-center`}`}>
+    <View>
+      {/* className={`${incomingCall && `flex items-center justify-center`}`} */}
       {/* {incomingCall && (
         <CallNotification
           answerCall={answerCall}
@@ -310,45 +308,46 @@ const ConversationComp = () => {
       {currentDisplay == "chat" && (
         <View className=" h-full bg-black  w-full flex flex-col">
           <Header setCurrentDisplay={setCurrentDisplay} />
-          <View className="bg-black flex justify-between items-center flex-col w-full flex-1">
-            <View className=" bg-midGray  mt-4  rounded-lg flex flex-row justify-evenly items-center space-x-3 w-fit  p-2 ">
+          <View className="bg-black flex justify-between  flex-col w-full flex-1">
+            <View className=" bg-midGray  mt-4  rounded-lg flex flex-row justify-evenly items-center space-x-3 w-[180px] self-center  p-2 ">
               <MaterialCommunityIcons size={20} color={"#ffffff"} name="lock" />
               <Text className="text-white font-normal ">
                 End to End Encrypted
               </Text>
             </View>
-            {/* <div
-              ref={ref}
-              className=" flex overflow-scroll scrol  overflow-x-hidden h-[calc(100%-50px)] flex-col gap-4 w-full p-3 "
-            >
+            <ScrollView className=" flex space-y-4 mt-2 w-full px-3 ">
               {messages.map((message, index) =>
                 conversationDetails.type == "single" ? (
-                  <Message
-                    key={index}
-                    body={message.body}
-                    senderId={message.senderId}
-                    timeStamp={message.timeStamp}
-                    status={message.status}
-                  />
+                  <View>
+                    <Message
+                      key={index}
+                      body={message.body}
+                      senderId={message.senderId}
+                      timeStamp={message.timeStamp}
+                      status={message.status}
+                    />
+                  </View>
                 ) : (
-                  <ConversationMessage
-                    key={index}
-                    body={message.body}
-                    senderId={message.senderId}
-                    timeStamp={message.timeStamp}
-                    status={message.status}
-                  />
+                  <View>
+                    <ConversationMessage
+                      key={index}
+                      body={message.body}
+                      senderId={message.senderId}
+                      timeStamp={message.timeStamp}
+                      status={message.status}
+                    />
+                  </View>
                 )
               )}
-              {/* {typing.length > 0 && <Typing user={typing[0]} />} */}
-            {/* </div> */}
+            </ScrollView>
+            {typing.length > 0 && <Typing user={typing[0]} />}
           </View>
           <InputBox
-            // handleTypingStart={handleTypingStart}
-            // handleTypingStop={handleTyinpingStop}
+            handleTypingStart={handleTypingStart}
+            handleTypingStop={handleTyinpingStop}
             value={value}
             setValue={setValue}
-            // handleSendMessage={handleSendMessage}
+            handleSendMessage={handleSendMessage}
           />
         </View>
       )}

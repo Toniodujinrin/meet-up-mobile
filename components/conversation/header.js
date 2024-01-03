@@ -7,20 +7,22 @@ import { useNavigation } from "@react-navigation/native";
 import { ConversationContext } from "../../contexts/ConversationContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View, TouchableWithoutFeedback, Text } from "react-native";
-//import { SocketContext } from "../../contexts/socketContext";
-
+import { SocketContext } from "../../contexts/SocketContext";
 const Header = ({ setCurrentDisplay }) => {
   const navigate = useNavigation();
   dayjs.extend(relativeTime);
-  const { conversationDetails } = useContext(ConversationContext);
-  //const { onlineGroupUsers, leaveConversation } = useContext(SocketContext);
+  const { conversationDetails, setconversationDetails } =
+    useContext(ConversationContext);
+  const { onlineGroupUsers, leaveConversation } = useContext(SocketContext);
 
   return (
     <View className="bg-midGray w-full h-[80px] flex border-b border-mediumGray flex-row items-center justify-between p-4 ">
       <View className="flex flex-row space-x-3 items-center">
         <TouchableWithoutFeedback
           onPress={() => {
-            navigate.goBack();
+            navigate.navigate("Main");
+            setconversationDetails(null);
+            leaveConversation();
           }}
         >
           <MaterialCommunityIcons
@@ -42,7 +44,7 @@ const Header = ({ setCurrentDisplay }) => {
           <Text className="text-white font-normal">
             {conversationDetails.name}
           </Text>
-          {/* {conversationDetails.type == "single" && (
+          {conversationDetails.type == "single" && (
             <Text
               className={`${
                 onlineGroupUsers.length <= 1 ? `text-mainGray` : `text-tekhelet`
@@ -52,7 +54,7 @@ const Header = ({ setCurrentDisplay }) => {
                 ? `Last seen : ${dayjs(conversationDetails.lastSeen).fromNow()}`
                 : "online"
             }`}</Text>
-          )} */}
+          )}
         </View>
       </View>
 

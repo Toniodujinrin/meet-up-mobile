@@ -156,6 +156,7 @@ const ConversationContextProvider = ({ children }) => {
   return (
     <ConversationContext.Provider
       value={{
+        setconversationDetails,
         deleteConversation,
         conversationProcessLoading,
         addToConversation,
